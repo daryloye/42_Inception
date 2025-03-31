@@ -6,14 +6,48 @@ services:
       context: ./requirements/nginx
     ports:
       - "443:443"
+    restart: always
+    env_file: .env
     networks:
       - inception
-    restart: always
     volumes:
-      - nginx-data:/var/log/nginx
+      - wordpress:/var/www/html:ro
+    depends_on:
+      - wordpress
+
+  mariadb:
+    image: mariadb:10.5
+    restart: always
+    env_file: .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    networks:
+      - inception
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:5.1.1-fpm-alpine
+    restart: always
+    env_file: .env
+    environment:
+      - WORDPRESS_DB_HOST=mariadb:3306
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+    networks:
+      - inception
+    volumes:
+      - wordpress:/var/www/html
+    depends_on:
+      - mariadb
 
 networks:
   inception:
 
 volumes:
-  nginx-data:
+  dbdata:
+  wordpress:
