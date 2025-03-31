@@ -1,9 +1,19 @@
 version: '3'
+
 services:
-  web:
-    image: nginx
+  nginx:
+    build:
+      context: ./requirements/nginx
     ports:
-      - 8080:80
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
+      - "443:443"
+    networks:
+      - inception
+    restart: always
+    volumes:
+      - nginx-data:/var/log/nginx
+
+networks:
+  inception:
+
+volumes:
+  nginx-data:
