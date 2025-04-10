@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM debian:bullseye
 
 RUN apk update && apk add --no-cache nginx openssl
 

@@ -20,3 +20,6 @@ build:
 
 logs:
 	docker-compose -f $(DOCKER_COMPOSE) logs --tail=100
+
+clean:
+	docker system prune -a
