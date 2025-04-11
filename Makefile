@@ -1,25 +1,25 @@
 DOCKER_COMPOSE = srcs/docker-compose.yml
 
 up:
-	docker-compose -f $(DOCKER_COMPOSE) up -d --build
+	sudo docker-compose -f $(DOCKER_COMPOSE) up -d --build
 
 down:
-	docker-compose -f $(DOCKER_COMPOSE) down
+	sudo docker-compose -f $(DOCKER_COMPOSE) down
 
 start:
-	docker-compose -f $(DOCKER_COMPOSE) start
+	sudo docker-compose -f $(DOCKER_COMPOSE) start
 
 stop:
-	docker-compose -f $(DOCKER_COMPOSE) stop
+	sudo docker-compose -f $(DOCKER_COMPOSE) stop
 
 restart:
-	docker-compose -f $(DOCKER_COMPOSE) restart
+	sudo docker-compose -f $(DOCKER_COMPOSE) restart
 
 build:
-	docker-compose -f $(DOCKER_COMPOSE) build
+	sudo docker-compose -f $(DOCKER_COMPOSE) build
 
 logs:
-	docker-compose -f $(DOCKER_COMPOSE) logs --tail=100
+	sudo docker-compose -f $(DOCKER_COMPOSE) logs --tail=100
 
 clean:
-	docker system prune -a
+	sudo docker system prune -a -f

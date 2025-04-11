@@ -11,12 +11,12 @@ services:
     networks:
       - inception
     volumes:
-      - wordpress:/var/www/html:ro
+      - wordpress:/var/www/wordpress:ro
     depends_on:
       - wordpress
 
   mariadb:
-    image: mariadb:10.5
+    image: mariadb:latest
     restart: always
     env_file: .env
     environment:
@@ -31,8 +31,7 @@ services:
 
   wordpress:
     build:
-      context: ./
-    image: wordpress:5.1.1-fpm-alpine
+      context: ./requirements/wordpress
     restart: always
     env_file: .env
     environment:
@@ -43,7 +42,7 @@ services:
     networks:
       - inception
     volumes:
-      - wordpress:/var/www/html
+      - wordpress:/var/www/wordpress
     depends_on:
       - mariadb
 
