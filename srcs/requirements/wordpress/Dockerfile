@@ -1,25 +1,30 @@
 FROM debian:bullseye
 
 RUN apt-get update && apt-get install -y \
-	php-fpm \
-	php-mysql \
-	curl \
-	unzip
+  php-fpm \
+  php-mysql \
+  curl \
+  unzip
 
 RUN mkdir -p /var/www
+WORKDIR /var/www
 
 # download wordpress folder
 RUN curl -O https://wordpress.org/latest.zip \
-	&& unzip latest.zip \
-	&& rm latest.zip \
-	&& mv wordpress /var/www/ \
-	&& chown -R www-data:www-data /var/www/wordpress
+  && unzip latest.zip \
+  && rm latest.zip \
+  && mv wordpress/* . \
+  && rm -rf wordpress \
+  && chown -R www-data:www-data .
 
-WORKDIR /var/www/wordpress
-# VOLUME /var/www/wordpress
+# Configure PHP-FPM to listen on TCP instead of Unix socket
+RUN mkdir -p /run/php \
+  && sed -i 's|^listen = .*|listen = 9000|' /etc/php/*/fpm/pool.d/www.conf
 
-RUN ls && pwd
+# Copy runtime script that injects wp-config.php
+COPY tools/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 9000
 
-CMD ["php-fpm7.4", "-F"]
+CMD ["/entrypoint.sh"]
