@@ -1,26 +1,20 @@
 #!/bin/bash
-set -e
 
-# Start MariaDB in the background
+# Start MariaDB using mysqld_safe
+echo "Starting MariaDB..."
 mysqld_safe &
+MYSQL_PID=$!
 
-# Wait until MariaDB is ready (10s timeout)
-for i in {1..30}; do
-    if mysqladmin ping --silent; then
-        echo "✅ MariaDB is ready."
-        break
-    fi
-    echo "Waiting for MariaDB..."
+# Wait for MariaDB to be ready
+echo "Waiting for MariaDB to be ready..."
+until mysqladmin ping -h 127.0.0.1 > /dev/null 2>&1; do
     sleep 1
+    echo "Still waiting..."
 done
 
-# Run SQL if available
-if [ -f /init.sql ]; then
-    echo "⏳ Running init.sql..."
-    mysql < /init.sql || { echo "❌ Failed to run init.sql"; exit 1; }
-else
-    echo "⚠️ No init.sql found."
-fi
+# Run the SQL initialization script
+echo "Running init.sql..."
+mysql -u root -h 127.0.0.1 < /init.sql
 
-# Keep the DB running in foreground
-exec mysqld_safe
+# Keep container alive
+wait $MYSQL_PID
