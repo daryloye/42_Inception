@@ -1,21 +1,22 @@
 FROM debian:bullseye
 
 RUN apt-get update && apt-get install -y \
-  php-fpm \
-  php-mysql \
-  curl \
-  unzip
+    php-fpm \
+    php-mysql \
+    curl \
+    unzip \
+    mariadb-client
 
 RUN mkdir -p /var/www
 WORKDIR /var/www
 
 # download wordpress folder
-RUN curl -O https://wordpress.org/latest.zip \
-  && unzip latest.zip \
-  && rm latest.zip \
-  && mv wordpress/* . \
-  && rm -rf wordpress \
-  && chown -R www-data:www-data .
+RUN curl -O https://wordpress.org/latest.zip && \
+    unzip latest.zip && \
+    rm latest.zip && \
+    mv wordpress/* . && \
+    rm -rf wordpress && \
+    chown -R www-data:www-data .
 
 # Configure PHP-FPM to listen on TCP instead of Unix socket
 RUN mkdir -p /run/php \

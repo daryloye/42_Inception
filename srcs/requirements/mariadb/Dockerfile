@@ -5,15 +5,14 @@ RUN apt-get update && \
 	curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash && \
 	apt-get install -y mariadb-server
 
-RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld && mkdir -p /var/lib/mysqld && chown -R mysql:mysql /var/lib/mysqld
+# RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld && mkdir -p /var/lib/mysqld && chown -R mysql:mysql /var/lib/mysqld
 
+COPY conf/* /etc/mysql/mariadb.conf.d/
+COPY tools/* /
+RUN chmod +x /entrypoint.sh
 
-COPY tools/init.sh /init.sh
-COPY tools/init.sql /init.sql
-RUN chmod +x /init.sh
-
-RUN echo "\n[mysqld]\nskip-networking=0\nskip-bind-address" >> /etc/mysql/mariadb.cnf
+# RUN echo "\n[mysqld]\nskip-networking=0\nskip-bind-address" >> /etc/mysql/mariadb.cnf
 
 EXPOSE 3306
 
-CMD ["/init.sh"]
+CMD ["/entrypoint.sh"]
