@@ -1,13 +1,15 @@
 #!/bin/bash
 
+chown -R mysql:mysql /var/lib/mysql
+
 # Start MariaDB using mysqld_safe
 echo "Starting MariaDB..."
-mariadbd-safe &
+mysqld_safe &
 MYSQL_PID=$!
 
 # Wait for MariaDB to be ready
 echo "Waiting for MariaDB to be ready..."
-until mariadb-admin ping -h 127.0.0.1 -p"$MYSQL_ROOT_PASSWORD" > /dev/null 2>&1; do
+until mysqladminadmin ping -h 127.0.0.1 -p"$MYSQL_ROOT_PASSWORD" > /dev/null 2>&1; do
     sleep 1
     echo "Still waiting..."
 done

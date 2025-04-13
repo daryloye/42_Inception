@@ -5,8 +5,6 @@ RUN apt-get update && \
 	curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash && \
 	apt-get install -y mariadb-server
 
-# RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld && mkdir -p /var/lib/mysqld && chown -R mysql:mysql /var/lib/mysqld
-
 COPY conf/* /etc/mysql/mariadb.conf.d/
 COPY tools/* /
 RUN chmod +x /entrypoint.sh

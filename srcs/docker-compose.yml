@@ -9,7 +9,7 @@ services:
     networks:
       - inception
     volumes:
-      - wordpress:/var/www/wordpress:ro
+      - /home/daong/data/wordpress:/var/www/wordpress:ro
     depends_on:
       - wordpress
 
@@ -21,7 +21,7 @@ services:
     networks:
       - inception
     volumes:
-      - dbdata:/var/lib/mysql
+      - /home/daong/data/mariadb:/var/lib/mysql
 
   wordpress:
     build:
@@ -36,13 +36,9 @@ services:
     networks:
       - inception
     volumes:
-      - wordpress:/var/www/wordpress
+      - /home/daong/data/wordpress:/var/www/wordpress
     depends_on:
       - mariadb
 
 networks:
   inception:
-
-volumes:
-  dbdata:
-  wordpress:
