@@ -2,6 +2,8 @@ services:
   nginx:
     build:
       context: ./requirements/nginx
+    image: nginx
+    container_name: nginx
     ports:
       - "443:443"
     restart: always
@@ -9,36 +11,52 @@ services:
     networks:
       - inception
     volumes:
-      - /home/daong/data/wordpress:/var/www/wordpress:ro
+      - wordpress:/var/www:ro
     depends_on:
       - wordpress
 
   mariadb:
     build:
       context: ./requirements/mariadb
+    image: mariadb
+    container_name: mariadb
     restart: always
     env_file: .env
     networks:
       - inception
     volumes:
-      - /home/daong/data/mariadb:/var/lib/mysql
+      - mariadb:/var/lib/mysql
 
   wordpress:
     build:
       context: ./requirements/wordpress
+    image: wordpress
+    container_name: wordpress
     restart: always
     env_file: .env
-    environment:
-      - WORDPRESS_DB_HOST=mariadb:3306
-      - WORDPRESS_DB_NAME=wordpress
-      - WORDPRESS_DB_USER=user
-      - WORDPRESS_DB_PASSWORD=password
     networks:
       - inception
     volumes:
-      - /home/daong/data/wordpress:/var/www/wordpress
+      - wordpress:/var/www
     depends_on:
       - mariadb
 
 networks:
   inception:
+    name: inception
+
+volumes:
+  mariadb:
+    name: mariadb
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/daong/data/mariadb
+      o: bind
+  wordpress:
+    name: wordpress
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/daong/data/wordpress
+      o: bind

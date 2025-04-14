@@ -1,22 +1,40 @@
 #!/bin/bash
 
-chown -R mysql:mysql /var/lib/mysql
+set -e
 
-# Start MariaDB using mysqld_safe
+chown -R mysql:mysql /var/
+chown -R mysql:mysql /run/
+chmod 777 /var/
+chmod 777 /run/
+
+# Install MariaDB (for first time use)
+echo "Installing MariaDB..."
+mariadb-install-db --datadir=/var/lib/mysql
+
+# Start MariaDB
 echo "Starting MariaDB..."
-mysqld_safe &
+mariadbd-safe &
 MYSQL_PID=$!
 
 # Wait for MariaDB to be ready
 echo "Waiting for MariaDB to be ready..."
-until mysqladminadmin ping -h 127.0.0.1 -p"$MYSQL_ROOT_PASSWORD" > /dev/null 2>&1; do
+until mysqladmin ping -p"$MYSQL_ROOT_PASSWORD" > /dev/null 2>&1; do
     sleep 1
     echo "Still waiting..."
 done
 
 # Run the SQL initialization script
-echo "Running init.sql..."
-mariadb -u root -p"$MYSQL_ROOT_PASSWORD" -h 127.0.0.1 < /init.sql
+echo "Running SQL script"
+cat << EOF > /init.sql
+CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
+CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';
+FLUSH PRIVILEGES;
+EOF
+
+mariadb -u root -p"$MYSQL_ROOT_PASSWORD" < /init.sql
+
+echo "MariaDB is ready"
 
 # Keep container alive
 wait $MYSQL_PID

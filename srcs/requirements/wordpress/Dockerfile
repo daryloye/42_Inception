@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /var/www
 WORKDIR /var/www
 
-# download wordpress folder
+# Download wordpress folder
 RUN curl -O https://wordpress.org/latest.zip && \
     unzip latest.zip && \
     rm latest.zip && \
@@ -22,8 +22,7 @@ RUN curl -O https://wordpress.org/latest.zip && \
 RUN mkdir -p /run/php \
   && sed -i 's|^listen = .*|listen = 9000|' /etc/php/*/fpm/pool.d/www.conf
 
-# Copy runtime script that injects wp-config.php
-COPY tools/entrypoint.sh /entrypoint.sh
+COPY tools/* /
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 9000
