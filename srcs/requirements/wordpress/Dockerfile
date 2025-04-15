@@ -4,8 +4,7 @@ RUN apt-get update && apt-get install -y \
     php-fpm \
     php-mysql \
     curl \
-    unzip \
-    mariadb-client
+    unzip
 
 RUN mkdir -p /var/www
 WORKDIR /var/www
@@ -24,6 +23,7 @@ RUN mkdir -p /run/php \
 
 COPY tools/* /
 RUN chmod +x /entrypoint.sh
+COPY html/* /
 
 EXPOSE 9000
 

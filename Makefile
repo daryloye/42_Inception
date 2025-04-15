@@ -1,8 +1,8 @@
 DOCKER_COMPOSE = srcs/docker-compose.yml
 
 up:
-	mkdir -p /home/daong/data/mariadb
-	mkdir -p /home/daong/data/wordpress
+	sudo mkdir -p /home/daong/data/mariadb
+	sudo mkdir -p /home/daong/data/wordpress
 	sudo docker-compose -f $(DOCKER_COMPOSE) up -d --build
 
 down:

@@ -44,6 +44,8 @@ fi
 
 echo "Wordpress is ready"
 
+mv /bonus.html /var/www/
+
 # Start PHP-FPM in foreground
 echo "Starting PHP-FPM"
 exec php-fpm7.4 -F
